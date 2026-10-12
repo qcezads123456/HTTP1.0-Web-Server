@@ -181,8 +181,3 @@ Example command:
 
 These results represent local loopback performance under a lightweight static-response workload. Actual performance may vary depending on hardware, operating system, logging overhead, and network conditions.
 
-### Future Improvements
-
-- Dynamic thread pool scaling
-- Improved thread synchronization and graceful shutdown
-- Further performance profiling and optimization
