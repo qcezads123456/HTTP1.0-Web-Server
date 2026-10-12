@@ -4,3 +4,6 @@ build/*
 !build/.gitkeep
 !www/index.html
 whitelist/whitelist.txt
+benchmark/*
+!benchmark/benchmark_result.txt
+benchmark.sh

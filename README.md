@@ -138,3 +138,51 @@ HTTP1.0-Web-Server
 │   └── whitelist.txt
 └── www/                # Input files for parsing
 ```
+
+## Performance Benchmark
+
+Performance testing was conducted using **ApacheBench (ab)** against the HTTP/1.0 server directly on `localhost:8080`, without the Nginx reverse proxy.
+
+### Test Configuration
+
+| Parameter | Value |
+|---|---|
+| Benchmark Tool | ApacheBench 2.3 |
+| Environment | WSL (Linux) |
+| Target | `http://localhost:8080/` |
+| Total Requests | 100,000 per test |
+| Concurrency Levels | 1, 10, 50, 100, 500, 1000 |
+| Response Body | 121 bytes |
+| HTTP Connection | Non-persistent (`Connection: close`) |
+
+### Benchmark Results
+
+| Concurrency | Requests/sec | Avg Latency | P99 Latency | Failed Requests |
+|---:|---:|---:|---:|---:|
+| 1 | 2,117.67 | 0.47 ms | 1 ms | 0 |
+| 10 | 5,962.76 | 1.68 ms | 4 ms | 0 |
+| 50 | 6,539.11 | 7.65 ms | 14 ms | 0 |
+| 100 | 6,918.88 | 14.45 ms | 23 ms | 0 |
+| 500 | 7,248.03 | 68.98 ms | 93 ms | 0 |
+| 1000 | **7,369.60** | 135.69 ms | 170 ms | 0 |
+
+### Observations
+
+- **Peak measured throughput:** Approximately 7,370 requests per second at 1,000 concurrent connections.
+- **Reliability:** ApacheBench reported zero failed requests across all six tests (600,000 requests in total).
+- **Throughput scaling:** Throughput increases with concurrency but begins to level off at higher concurrency levels.
+- **Latency trade-off:** Higher concurrency increases request latency while providing diminishing throughput improvements.
+
+### Reproduce the Benchmark
+
+Example command:
+
+`ab -n 100000 -c 1000 http://localhost:8080/`
+
+These results represent local loopback performance under a lightweight static-response workload. Actual performance may vary depending on hardware, operating system, logging overhead, and network conditions.
+
+### Future Improvements
+
+- Dynamic thread pool scaling
+- Improved thread synchronization and graceful shutdown
+- Further performance profiling and optimization
