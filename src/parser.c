@@ -5,6 +5,7 @@
 "Content-Type: %s\r\n"\
 "Content-Length: %ld\r\n"\
 "Connection: close\r\n\r\n"
+#define BUFFER_SIZE 4096
 
 static const char *file_format[]={
     ".html","text/html",
@@ -156,7 +157,7 @@ static void success_respond(resp_use_t *res,char *content,char *res_header,HTTP_
     size_t n;
     send(res->new_socket,res_header,strlen(res_header),MSG_NOSIGNAL);
     printf("%s\n",res_header);                            //temporarily disabled
-    while((n=fread(content,sizeof(char),sizeof(content),res_file))>0){
+    while((n=fread(content,sizeof(char),BUFFER_SIZE,res_file))>0){
         send(res->new_socket,content,n,MSG_NOSIGNAL);
     }
     fclose(res_file);

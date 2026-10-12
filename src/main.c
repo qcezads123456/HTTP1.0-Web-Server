@@ -36,17 +36,6 @@ int main(){
         client_res->new_socket=accept(res->sockfd,(struct sockaddr*)&addr,&socklen);
         if(client_res->new_socket>=0){
             setsockopt(client_res->new_socket,SOL_SOCKET,SO_RCVTIMEO,&timeout,sizeof(timeout));
-            if(client_res->new_socket==0){
-                char *res_msg=
-                    "HTTP/1.0 503 Service Unavailable\r\n"
-                    "Content-Type: text/plain\r\n"
-                    "\r\n"
-                    "Service Busy";
-                send(client_res->new_socket,res_msg,strlen(res_msg),MSG_NOSIGNAL);
-                close(client_res->new_socket);
-                free(client_res);
-            }
-            else{
                 if(addTask(respond_to_client,client_res)){
                     //printf("\nNEXT %d",count++);
                 }
@@ -60,7 +49,6 @@ int main(){
                     close(client_res->new_socket);
                     free(client_res);
                 }
-            }
         }
         else{
             if(errno==EINTR){
